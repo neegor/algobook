@@ -35,6 +35,7 @@ nav:
     - Машинное обучение: machine_learning/index.md
     - Финансовые: financial/index.md
     - Web программирование: web_programming/index.md
+    - Tags: tags.md
 
 markdown_extensions:
   - pymdownx.arithmatex:
@@ -61,4 +62,3 @@ plugins:
   - tags
   - search:
       lang: ru
-
