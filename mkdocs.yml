@@ -58,8 +58,7 @@ extra_css:
 
 plugins:
   - meta
-  - tags:
-      tags_file: tags.md
+  - tags
   - search:
       lang: ru
 
