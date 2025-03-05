@@ -33,8 +33,16 @@ nav:
     - Начало: index.md
     - Графы: graphs/index.md
     - Машинное обучение: machine_learning/index.md
+    - Компьютерное зрение: cv/index.md
+    - Динамическое программирование: dynamic/index.md
     - Финансовые: financial/index.md
     - Web программирование: web_programming/index.md
+    - Сортировки: sorts/index.md
+    - Поиск: search/index.md
+    - Сжатие: compression/index.md
+    - Планирование: scheduling/index.md
+    - Хэш: hashes/index.md
+
     - Tags: tags.md
 
 markdown_extensions:
