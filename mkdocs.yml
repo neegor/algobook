@@ -34,6 +34,7 @@ nav:
     - Графы: graphs/index.md
     - Машинное обучение: machine_learning/index.md
     - Компьютерное зрение: cv/index.md
+    - Рекомендательные: reqsys/index.md
     - Динамическое программирование: dynamic/index.md
     - Финансовые: financial/index.md
     - Web программирование: web_programming/index.md
