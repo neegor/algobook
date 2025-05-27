@@ -6,4 +6,5 @@
 
 ## Оглавление
 
-PASS
+[Policy Gradient (PG)](policy_gradient.md)    
+[Deep Q-Networks (DQN)](deep_q_networks.md)  
