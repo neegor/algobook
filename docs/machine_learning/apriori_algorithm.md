@@ -1,94 +1,185 @@
 
-# Apriori алгоритм
+# Алгоритм Apriori: Подробное объяснение с примерами на Python
 
-Алгоритм __Apriori__ представляет собой метод анализа часто встречающихся наборов элементов в реляционных базах данных, который позволяет выявлять правила ассоциации между этими наборами. Алгоритм заключается в обнаружении часто встречающихся отдельных элементов в базе данных и последующем расширении их на более крупные наборы, если эти наборы также встречаются достаточно часто. Определенные __Apriori__ часто используемые наборы элементов могут быть использованы для выявления правил сопоставления, которые позволяют обнаружить общие тенденции в базе данных. Этот метод находит применение в различных областях, включая анализ рыночной корзины.
+Алгоритм Apriori - это классический алгоритм для поиска ассоциативных правил в наборах данных, разработанный в 1994 году. Он широко используется в анализе рыночных корзин (market basket analysis) для выявления часто покупаемых вместе товаров.
 
-## Описание
+## Основные понятия
 
-Алгоритм __Apriori__ был предложен Агравалом и Шрикантом в 1994 году. __Apriori__ предназначен для работы с базами данных, содержащими транзакции (например, коллекции товаров, купленных клиентами, или сведения о посещаемости веб-сайта, или IP-адреса). Другие алгоритмы предназначены для поиска ассоциативных правил в данных, не содержащих транзакций (Winepi и Minepi) или не имеющих временных меток (секвенирование ДНК). Каждая транзакция рассматривается как набор элементов (itemset). При заданном пороговом значении $ C $ алгоритм __Apriori__ идентифицирует наборы элементов, которые являются подмножествами, по меньшей мере, транзакций $ C $ в базе данных.
+1. **Поддержка (Support)** - частота появления набора в данных
+   - $ Support(X) = (Количество транзакций, содержащих X) / (Общее количество транзакций) $
 
-В __Apriori__ используется подход "снизу вверх", при котором часто используемые подмножества расширяются по одному элементу за раз (шаг, известный как генерация кандидатов), а группы кандидатов проверяются на соответствие данным. Алгоритм завершает работу, когда больше не найдено успешных расширений.
+2. **Достоверность (Confidence)** - вероятность появления $Y$ при наличии $X$
+   - $Confidence(X → Y) = Support(X ∪ Y) / Support(X)$
 
-__Apriori__ использует поиск по ширине и структуру хэш-дерева для эффективного подсчета наборов элементов-кандидатов. Он генерирует наборы элементов−кандидатов длиной $k$ из наборов элементов длиной $k-1$. Затем он отсекает кандидатов, которые имеют нечастый дополнительный шаблон. Согласно лемме о нисходящем замыкании, набор кандидатов содержит все часто используемые наборы элементов длиной $k$. После этого он сканирует базу данных транзакций, чтобы определить часто используемые наборы элементов среди кандидатов.
+3. **Лифт (Lift)** - насколько чаще встречается $Y$ вместе с $X$, чем ожидается
+   - $Lift(X → Y) = Confidence(X → Y) / Support(Y)$
 
-Псевдокод для алгоритма приведен ниже для базы данных транзакций $T$ и порогового значения поддержки $ε$. Используется обычная теоретико-множественная запись, хотя обратите внимание, что $T$ - это мультимножество. $C_k$ - это набор-кандидат для уровня $k$. Предполагается, что на каждом шаге алгоритм генерирует наборы-кандидаты из больших наборов элементов предыдущего уровня, учитывая лемму о нисходящем замыкании. $\mathrm{count}[c]$ обращается к полю структуры данных, представляющему потенциальный набор $c$, который изначально предполагается равным нулю. Многие детали ниже опущены, обычно наиболее важной частью реализации является структура данных, используемая для хранения наборов-кандидатов и подсчета их частот.
+## Принцип работы алгоритма Apriori
 
-Для наглядности рассмотрим следующую базу данных, в которой каждая строка представляет собой транзакцию, а каждый столбец — отдельный элемент транзакции:
+1. **Генерация кандидатов** - создание наборов элементов (itemsets) увеличенного размера
+2. **Отсечение по поддержке** - удаление наборов, не удовлетворяющих минимальной поддержке
+3. **Повторение** до тех пор, пока не перестанут генерироваться новые частые наборы
 
-| A | B | C |
-| - | - | - | 
-| alpha |beta |	epsilon |
-| alpha |beta |	theta |
-| alpha |beta |	epsilon |
-| alpha |beta |	theta  |
+## Реализация на Python
 
-Правила ассоциации, которые можно определить на основе данной базы данных, следующие:
+### Пример 1: Простая реализация с нуля
 
-1. 100% наборов с alpha также содержат beta
-2. 50% наборов с alpha, beta также содержат epsilon
-3. 50% наборов с alpha, beta также содержат theta
-
-## Реализация
-
-```python title="python"
+```python
 from itertools import combinations
 
+def apriori(transactions, min_support):
+    # Преобразование транзакций в множество элементов
+    items = set()
+    for transaction in transactions:
+        for item in transaction:
+            items.add(frozenset([item]))
+    items = list(items)
+    
+    # Первый проход - вычисление поддержки для отдельных элементов
+    item_counts = {}
+    for item in items:
+        for transaction in transactions:
+            if item.issubset(transaction):
+                item_counts[item] = item_counts.get(item, 0) + 1
+    
+    # Фильтрация по минимальной поддержке
+    num_transactions = len(transactions)
+    frequent_items = {}
+    for item, count in item_counts.items():
+        support = count / num_transactions
+        if support >= min_support:
+            frequent_items[item] = support
+    
+    # Генерация кандидатов большего размера
+    k = 2
+    current_frequent_items = frequent_items
+    all_frequent_items = {}
+    all_frequent_items.update(current_frequent_items)
+    
+    while current_frequent_items:
+        # Генерация кандидатов
+        itemsets = list(current_frequent_items.keys())
+        candidates = set()
+        for i in range(len(itemsets)):
+            for j in range(i+1, len(itemsets)):
+                candidate = itemsets[i].union(itemsets[j])
+                if len(candidate) == k:
+                    candidates.add(candidate)
+        
+        # Подсчет поддержки для кандидатов
+        candidate_counts = {}
+        for candidate in candidates:
+            for transaction in transactions:
+                if candidate.issubset(transaction):
+                    candidate_counts[candidate] = candidate_counts.get(candidate, 0) + 1
+        
+        # Фильтрация кандидатов
+        current_frequent_items = {}
+        for candidate, count in candidate_counts.items():
+            support = count / num_transactions
+            if support >= min_support:
+                current_frequent_items[candidate] = support
+        
+        all_frequent_items.update(current_frequent_items)
+        k += 1
+    
+    return all_frequent_items
 
-def load_data() -> list[list[str]]:
-    # (1)!
-    return [["milk"], ["milk", "butter"], ["milk", "bread"], ["milk", "bread", "chips"]]
+# Пример данных
+transactions = [
+    ['молоко', 'хлеб', 'печенье'],
+    ['молоко', 'печенье'],
+    ['хлеб', 'печенье', 'кола'],
+    ['хлеб', 'кола'],
+    ['молоко', 'хлеб', 'печенье', 'кола'],
+    ['молоко', 'хлеб', 'печенье']
+]
 
+# Запуск алгоритма
+min_support = 0.5
+frequent_itemsets = apriori(transactions, min_support)
 
-def prune(itemset: list, candidates: list, length: int) -> list:
-    # (2)!
-    pruned = []
-    for candidate in candidates:
-        is_subsequence = True
-        for item in candidate:
-            if item not in itemset or itemset.count(item) < length - 1:
-                is_subsequence = False
-                break
-        if is_subsequence:
-            pruned.append(candidate)
-    return pruned
-
-
-def apriori(data: list[list[str]], min_support: int) -> list[tuple[list[str], int]]:
-    # (3)!
-    itemset = [list(transaction) for transaction in data]
-    frequent_itemsets = []
-    length = 1
-
-    while itemset:
-        # (4)!
-        counts = [0] * len(itemset)
-        for transaction in data:
-            for j, candidate in enumerate(itemset):
-                if all(item in transaction for item in candidate):
-                    counts[j] += 1
-
-        # (5)!
-        itemset = [item for i, item in enumerate(itemset) if counts[i] >= min_support]
-
-        # (6)!
-        for i, item in enumerate(itemset):
-            frequent_itemsets.append((sorted(item), counts[i]))
-
-        length += 1
-        itemset = prune(itemset, list(combinations(itemset, length)), length)
-
-    return frequent_itemsets
-
+# Вывод результатов
+print("Частые наборы с поддержкой не менее", min_support)
+for itemset, support in frequent_itemsets.items():
+    print(f"{tuple(itemset)}: {support:.2f}")
 ```
 
-1.  Возвращает примерный набор данных транзакции
+### Пример 2: Использование библиотеки mlxtend
 
-2.  Необходимо провести фильтрацию наборов элементов-кандидатов, которые встречаются в данных нечасто. Для этого следует проверить, присутствуют ли все (k-1) подмножества набора элементов-кандидатов в частых наборах элементов предыдущей итерации
+Более практичный способ - использовать готовую библиотеку:
 
-3.  Возвращает список часто используемых наборов элементов и количество их поддерживаемых элементов
+```python
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+import pandas as pd
 
-4.  Поддержка подсчёта набора элементов
+# Пример данных
+dataset = [
+    ['молоко', 'хлеб', 'печенье'],
+    ['молоко', 'печенье'],
+    ['хлеб', 'печенье', 'кола'],
+    ['хлеб', 'кола'],
+    ['молоко', 'хлеб', 'печенье', 'кола'],
+    ['молоко', 'хлеб', 'печенье']
+]
 
-5.  Обрезайте редкие продукты
+# Преобразование данных
+te = TransactionEncoder()
+te_ary = te.fit(dataset).transform(dataset)
+df = pd.DataFrame(te_ary, columns=te.columns_)
 
-6.  Добавляйте часто используемые наборы элементов (в виде списка для поддержания порядка)
+# Нахождение частых наборов
+frequent_itemsets = apriori(df, min_support=0.5, use_colnames=True)
+print("Частые наборы:")
+print(frequent_itemsets)
+
+# Генерация ассоциативных правил
+rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.7)
+print("\nАссоциативные правила:")
+print(rules[['antecedents', 'consequents', 'support', 'confidence', 'lift']])
+```
+
+### Пример 3: Визуализация результатов
+
+```python
+import matplotlib.pyplot as plt
+import networkx as nx
+
+# Создание графа
+G = nx.DiGraph()
+
+# Добавление узлов и ребер
+for _, rule in rules.iterrows():
+    G.add_edge(', '.join(rule['antecedents']), 
+               ', '.join(rule['consequents']),
+               weight=rule['lift'])
+
+# Рисование графа
+plt.figure(figsize=(10, 6))
+pos = nx.spring_layout(G, k=0.5)
+nx.draw(G, pos, with_labels=True, 
+        node_size=3000, node_color='skyblue', 
+        font_size=10, font_weight='bold',
+        edge_color='gray', width=[d['weight']*0.5 for (u, v, d) in G.edges(data=True)])
+edge_labels = {(u, v): f"Lift: {d['weight']:.2f}" for u, v, d in G.edges(data=True)}
+nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+plt.title("Ассоциативные правила (размер стрелки соответствует лифту)")
+plt.show()
+```
+
+## Оптимизации алгоритма Apriori
+
+1. **Hash-based itemset counting** - использование хеш-таблиц для ускорения подсчета
+2. **Transaction reduction** - удаление транзакций, не содержащих текущие частые наборы
+3. **Partitioning** - разделение данных на части, которые можно обрабатывать в памяти
+4. **Sampling** - работа с выборкой данных для начального анализа
+
+## Ограничения алгоритма
+
+1. Множественные проходы по данным
+2. Генерация большого числа кандидатов
+3. Высокие требования к памяти для больших наборов данных
+4. Чувствительность к выбору минимальной поддержки
+
+Алгоритм Apriori остается важной базовой техникой в анализе ассоциативных правил, несмотря на появление более современных алгоритмов, таких как FP-Growth.
