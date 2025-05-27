@@ -6,5 +6,6 @@
 
 ## Оглавление
 
-[Policy Gradient (PG)](policy_gradient.md)    
+[Policy Gradient (PG)](policy_gradient.md)  
 [Deep Q-Networks (DQN)](deep_q_networks.md)  
+[Linear Upper Confidence Bound (LinUCB)](linucb.md)
