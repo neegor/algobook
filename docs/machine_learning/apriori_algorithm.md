@@ -1,4 +1,3 @@
-
 # Алгоритм Apriori: Подробное объяснение с примерами на Python
 
 Алгоритм Apriori - это классический алгоритм для поиска ассоциативных правил в наборах данных, разработанный в 1994 году. Он широко используется в анализе рыночных корзин (market basket analysis) для выявления часто покупаемых вместе товаров.
@@ -6,9 +5,11 @@
 ## Основные понятия
 
 1. **Поддержка (Support)** - частота появления набора в данных
+
    - $ Support(X) = (Количество транзакций, содержащих X) / (Общее количество транзакций) $
 
 2. **Достоверность (Confidence)** - вероятность появления $Y$ при наличии $X$
+
    - $Confidence(X → Y) = Support(X ∪ Y) / Support(X)$
 
 3. **Лифт (Lift)** - насколько чаще встречается $Y$ вместе с $X$, чем ожидается
@@ -34,14 +35,14 @@ def apriori(transactions, min_support):
         for item in transaction:
             items.add(frozenset([item]))
     items = list(items)
-    
+
     # Первый проход - вычисление поддержки для отдельных элементов
     item_counts = {}
     for item in items:
         for transaction in transactions:
             if item.issubset(transaction):
                 item_counts[item] = item_counts.get(item, 0) + 1
-    
+
     # Фильтрация по минимальной поддержке
     num_transactions = len(transactions)
     frequent_items = {}
@@ -49,13 +50,13 @@ def apriori(transactions, min_support):
         support = count / num_transactions
         if support >= min_support:
             frequent_items[item] = support
-    
+
     # Генерация кандидатов большего размера
     k = 2
     current_frequent_items = frequent_items
     all_frequent_items = {}
     all_frequent_items.update(current_frequent_items)
-    
+
     while current_frequent_items:
         # Генерация кандидатов
         itemsets = list(current_frequent_items.keys())
@@ -65,24 +66,24 @@ def apriori(transactions, min_support):
                 candidate = itemsets[i].union(itemsets[j])
                 if len(candidate) == k:
                     candidates.add(candidate)
-        
+
         # Подсчет поддержки для кандидатов
         candidate_counts = {}
         for candidate in candidates:
             for transaction in transactions:
                 if candidate.issubset(transaction):
                     candidate_counts[candidate] = candidate_counts.get(candidate, 0) + 1
-        
+
         # Фильтрация кандидатов
         current_frequent_items = {}
         for candidate, count in candidate_counts.items():
             support = count / num_transactions
             if support >= min_support:
                 current_frequent_items[candidate] = support
-        
+
         all_frequent_items.update(current_frequent_items)
         k += 1
-    
+
     return all_frequent_items
 
 # Пример данных
@@ -151,15 +152,15 @@ G = nx.DiGraph()
 
 # Добавление узлов и ребер
 for _, rule in rules.iterrows():
-    G.add_edge(', '.join(rule['antecedents']), 
+    G.add_edge(', '.join(rule['antecedents']),
                ', '.join(rule['consequents']),
                weight=rule['lift'])
 
 # Рисование графа
 plt.figure(figsize=(10, 6))
 pos = nx.spring_layout(G, k=0.5)
-nx.draw(G, pos, with_labels=True, 
-        node_size=3000, node_color='skyblue', 
+nx.draw(G, pos, with_labels=True,
+        node_size=3000, node_color='skyblue',
         font_size=10, font_weight='bold',
         edge_color='gray', width=[d['weight']*0.5 for (u, v, d) in G.edges(data=True)])
 edge_labels = {(u, v): f"Lift: {d['weight']:.2f}" for u, v, d in G.edges(data=True)}
