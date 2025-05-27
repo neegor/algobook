@@ -8,5 +8,5 @@
 
 [Policy Gradient (PG)](policy_gradient.md)  
 [Deep Q-Networks (DQN)](deep_q_networks.md)  
-[Linear Upper Confidence Bound (LinUCB)](linucb.md)
+[Linear Upper Confidence Bound (LinUCB)](linucb.md)  
 [Thompson Sampling (TS)](thompson_sampling.md)
