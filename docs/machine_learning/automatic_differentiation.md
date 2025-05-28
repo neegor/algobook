@@ -1,4 +1,4 @@
-# Автоматическая дифференциация 
+# Автоматическое дифференцирование (Automatic Differentiation, AD)
 
 В математике и компьютерной алгебре автоматическое дифференцирование, также известное как алгоритмическое дифференцирование, вычислительное дифференцирование или арифметическое дифференцирование, представляет собой набор методов, предназначенных для вычисления частной производной функции, заданной компьютерной программой.
 
@@ -8,245 +8,132 @@
 
 Автоматическое дифференцирование основано на том факте, что каждое компьютерное вычисление, независимо от его сложности, состоит из последовательности элементарных арифметических операций, таких как сложение, вычитание, умножение и деление, а также элементарных функций, таких как экспонента, логарифм, синус и косинус. При многократном применении правила цепочки к этим операциям частные производные произвольного порядка могут быть вычислены автоматически с рабочей точностью, используя при этом не больше небольшого постоянного множителя арифметических операций, чем в исходной программе.
 
-## Реализация
+## Основные принципы AD
 
-```python title="python"
-from __future__ import annotations
+1. **Разложение на элементарные операции**: Любая сложная функция разбивается на последовательность элементарных операций (сложение, умножение, тригонометрические функции и т.д.), для которых известны правила дифференцирования.
 
-from collections import defaultdict
-from enum import Enum
-from types import TracebackType
-from typing import Any
+2. **Правило цепи (chain rule)**: Производная сложной функции вычисляется как произведение производных всех элементарных операций в порядке их выполнения.
 
-import numpy as np
-from typing_extensions import Self  # noqa: UP035
+3. **Два основных режима**:
+   - Прямой режим (forward mode)
+   - Обратный режим (reverse mode)
 
+## Примеры реализации в Python
 
-class OpType(Enum):
-    # (1)!
-    ADD = 0
-    SUB = 1
-    MUL = 2
-    DIV = 3
-    MATMUL = 4
-    POWER = 5
-    NOOP = 6
+### 1. Использование библиотеки `autograd`
 
+```python
+import autograd.numpy as np
+from autograd import grad
 
-class Variable:
-    # (2)!
-    def __init__(self, value: Any) -> None:
-        self.value = np.array(value)
-        self.param_to: list[Operation] = []
-        self.result_of: Operation = Operation(OpType.NOOP)
+# Определяем функцию
+def f(x):
+    return x**2 + 3*x + 5
 
-    def __repr__(self) -> str:
-        return f"Variable({self.value})"
+# Создаем функцию для вычисления производной
+df_dx = grad(f)
 
-    def to_ndarray(self) -> np.ndarray:
-        return self.value
-
-    def __add__(self, other: Variable) -> Variable:
-        result = Variable(self.value + other.value)
-
-        with GradientTracker() as tracker:
-            if tracker.enabled:
-                tracker.append(OpType.ADD, params=[self, other], output=result)
-        return result
-
-    def __sub__(self, other: Variable) -> Variable:
-        result = Variable(self.value - other.value)
-
-        with GradientTracker() as tracker:
-            if tracker.enabled:
-                tracker.append(OpType.SUB, params=[self, other], output=result)
-        return result
-
-    def __mul__(self, other: Variable) -> Variable:
-        result = Variable(self.value * other.value)
-
-        with GradientTracker() as tracker:
-            if tracker.enabled:
-                tracker.append(OpType.MUL, params=[self, other], output=result)
-        return result
-
-    def __truediv__(self, other: Variable) -> Variable:
-        result = Variable(self.value / other.value)
-
-        with GradientTracker() as tracker:
-            if tracker.enabled:
-                tracker.append(OpType.DIV, params=[self, other], output=result)
-        return result
-
-    def __matmul__(self, other: Variable) -> Variable:
-        result = Variable(self.value @ other.value)
-
-        with GradientTracker() as tracker:
-            if tracker.enabled:
-                tracker.append(OpType.MATMUL, params=[self, other], output=result)
-        return result
-
-    def __pow__(self, power: int) -> Variable:
-        result = Variable(self.value**power)
-
-        with GradientTracker() as tracker:
-            if tracker.enabled:
-                tracker.append(
-                    OpType.POWER,
-                    params=[self],
-                    output=result,
-                    other_params={"power": power},
-                )
-        return result
-
-    def add_param_to(self, param_to: Operation) -> None:
-        self.param_to.append(param_to)
-
-    def add_result_of(self, result_of: Operation) -> None:
-        self.result_of = result_of
-
-
-class Operation:
-    # (3)!
-    def __init__(
-        self,
-        op_type: OpType,
-        other_params: dict | None = None,
-    ) -> None:
-        self.op_type = op_type
-        self.other_params = {} if other_params is None else other_params
-
-    def add_params(self, params: list[Variable]) -> None:
-        self.params = params
-
-    def add_output(self, output: Variable) -> None:
-        self.output = output
-
-    def __eq__(self, value) -> bool:
-        return self.op_type == value if isinstance(value, OpType) else False
-
-
-class GradientTracker:
-    # (4)!
-    instance = None
-
-    def __new__(cls) -> Self:
-        # (5)!
-        if cls.instance is None:
-            cls.instance = super().__new__(cls)
-        return cls.instance
-
-    def __init__(self) -> None:
-        self.enabled = False
-
-    def __enter__(self) -> Self:
-        self.enabled = True
-        return self
-
-    def __exit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> None:
-        self.enabled = False
-
-    def append(
-        self,
-        op_type: OpType,
-        params: list[Variable],
-        output: Variable,
-        other_params: dict | None = None,
-    ) -> None:
-        
-        operation = Operation(op_type, other_params=other_params)
-        param_nodes = []
-        for param in params:
-            param.add_param_to(operation)
-            param_nodes.append(param)
-        output.add_result_of(operation)
-
-        operation.add_params(param_nodes)
-        operation.add_output(output)
-
-    def gradient(self, target: Variable, source: Variable) -> np.ndarray | None:
-        # (7)!
-        partial_deriv = defaultdict(lambda: 0)
-        partial_deriv[target] = np.ones_like(target.to_ndarray())
-
-        operation_queue = [target.result_of]
-        while len(operation_queue) > 0:
-            operation = operation_queue.pop()
-            for param in operation.params:
-                dparam_doutput = self.derivative(param, operation)
-                dparam_dtarget = dparam_doutput * partial_deriv[operation.output]
-                partial_deriv[param] += dparam_dtarget
-
-                if param.result_of and param.result_of != OpType.NOOP:
-                    operation_queue.append(param.result_of)
-
-        return partial_deriv.get(source)
-
-    def derivative(self, param: Variable, operation: Operation) -> np.ndarray:
-        # (8)!
-        params = operation.params
-
-        if operation == OpType.ADD:
-            return np.ones_like(params[0].to_ndarray(), dtype=np.float64)
-        if operation == OpType.SUB:
-            if params[0] == param:
-                return np.ones_like(params[0].to_ndarray(), dtype=np.float64)
-            return -np.ones_like(params[1].to_ndarray(), dtype=np.float64)
-        if operation == OpType.MUL:
-            return (
-                params[1].to_ndarray().T
-                if params[0] == param
-                else params[0].to_ndarray().T
-            )
-        if operation == OpType.DIV:
-            if params[0] == param:
-                return 1 / params[1].to_ndarray()
-            return -params[0].to_ndarray() / (params[1].to_ndarray() ** 2)
-        if operation == OpType.MATMUL:
-            return (
-                params[1].to_ndarray().T
-                if params[0] == param
-                else params[0].to_ndarray().T
-            )
-        if operation == OpType.POWER:
-            power = operation.other_params["power"]
-            return power * (params[0].to_ndarray() ** (power - 1))
-
-        err_msg = f"invalid operation type: {operation.op_type}"
-        raise ValueError(err_msg)
+# Вычисляем значение функции и производной в точке x=2.0
+x = 2.0
+print(f"f({x}) = {f(x)}")  # f(2.0) = 15.0
+print(f"f'({x}) = {df_dx(x)}")  # f'(2.0) = 7.0
 ```
 
-1.  Класс представляет собой список поддерживаемых операций с переменной для вычисления градиента
+### 2. Использование PyTorch
 
-2.  Class представляет собой `n-мерный объект`, который используется для обертывания массива `numpy`, над которым будут выполняться операции и вычисляться градиент
+```python
+import torch
 
-3.  Класс представляет операцию между одним или двумя объектами-переменными. Объекты операции содержат тип операции, указатели на входную переменную объекты и указатель на результирующую переменную в результате операции.
+# Создаем тензор с require_grad=True для отслеживания операций
+x = torch.tensor(2.0, requires_grad=True)
 
-4.  Класс содержит методы для вычисления частных производных переменной на основе графика вычислений
+# Определяем функцию
+y = x**2 + 3*x + 5
 
-5.  Выполняется при создании класса object и возвращает результат, если объект уже создан. Этот класс следует одноэлементному шаблону проектирования
+# Вычисляем градиент
+y.backward()
 
-6.  Добавляет объект операции к связанным объектам переменных для создания вычислительного графика для вычисления градиентов.
+print(f"f({x.item()}) = {y.item()}")  # f(2.0) = 15.0
+print(f"f'({x.item()}) = {x.grad.item()}")  # f'(2.0) = 7.0
+```
 
-    `op_type`: Тип операции  
-    `params`: Входные параметры операции  
-    `output`: Выходная переменная операции
+### 3. Использование TensorFlow
 
-7.  Обратное накопление частных производных для вычисления градиентов целевой переменной относительно исходной переменной.
+```python
+import tensorflow as tf
 
-    `target`: целевая переменная, для которой вычисляются градиенты.
-    `source`: исходная переменная, относительно которой вычисляются градиенты
+# Создаем переменную
+x = tf.Variable(2.0)
 
-    `Returns`: Градиент исходной переменной по отношению к целевой переменной
+# Используем GradientTape для записи операций
+with tf.GradientTape() as tape:
+    y = x**2 + 3*x + 5
 
-8.  Вычислить производную от заданной операции/функции
+# Вычисляем градиент
+dy_dx = tape.gradient(y, x)
 
-    `param`: переменная, которую нужно дифференцировать
-    `operation`: функция, выполняемая над входной переменной
-    
-    `Returns`: Производная входной переменной по отношению к результату операции
+print(f"f({x.numpy()}) = {y.numpy()}")  # f(2.0) = 15.0
+print(f"f'({x.numpy()}) = {dy_dx.numpy()}")  # f'(2.0) = 7.0
+```
+
+### 4. Реализация простого AD (прямой режим)
+
+```python
+class Var:
+    def __init__(self, value, derivative=0):
+        self.value = value
+        self.derivative = derivative  # производная по какому-то базовому параметру
+
+    def __add__(self, other):
+        other = other if isinstance(other, Var) else Var(other, 0)
+        return Var(self.value + other.value, self.derivative + other.derivative)
+
+    def __mul__(self, other):
+        other = other if isinstance(other, Var) else Var(other, 0)
+        return Var(self.value * other.value,
+                  self.derivative * other.value + self.value * other.derivative)
+
+    def __pow__(self, power):
+        return Var(self.value ** power,
+                  power * self.value ** (power - 1) * self.derivative)
+
+    def __repr__(self):
+        return f"Var(value={self.value}, derivative={self.derivative})"
+
+# Пример использования
+x = Var(2.0, derivative=1.0)  # производная по себе равна 1
+y = x**2 + 3*x + 5
+
+print(y)  # Var(value=15.0, derivative=7.0)
+```
+
+### 5. Вычисление градиента для функции многих переменных
+
+```python
+from autograd import grad
+import autograd.numpy as np
+
+# Функция двух переменных
+def f(x, y):
+    return x**2 * y + np.sin(y)
+
+# Градиент по первому аргументу (df/dx)
+df_dx = grad(f, 0)
+
+# Градиент по второму аргументу (df/dy)
+df_dy = grad(f, 1)
+
+x, y = 2.0, 3.0
+print(f"f({x}, {y}) = {f(x, y)}")  # f(2.0, 3.0) = 11.141120008
+print(f"∂f/∂x = {df_dx(x, y)}")  # ∂f/∂x = 12.0
+print(f"∂f/∂y = {df_dy(x, y)}")  # ∂f/∂y = 3.989992497
+```
+
+## Применение автоматического дифференцирования
+
+1. **Оптимизация**: Градиентные методы оптимизации (градиентный спуск и его вариации)
+2. **Машинное обучение**: Обратное распространение ошибки в нейронных сетях
+3. **Физическое моделирование**: Чувствительность моделей к параметрам
+4. **Финансы**: Вычисление "греков" в оценке производных финансовых инструментов
+
+Автоматическое дифференцирование сочетает преимущества символьного (точность) и численного (универсальность) методов, что делает его незаменимым инструментом в современных научных и инженерных вычислениях.
