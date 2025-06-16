@@ -8,8 +8,8 @@
 
 ## Оглавление
 
-[Равноценный ежемесячный взнос (EMI)](equated_monthly_installments.md)  
-[Диофантово уравнение](diophantine_equation.md)  
 [Дерево Меркла](merkle_tree.md)  
-[Конвертер валют](../web_programming/currency_converter.md)  
-[Текущая биржевая цена](../web_programming/current_stock_price.md) 
+[Диофантово уравнение](diophantine_equation.md)  
+[Равноценный ежемесячный взнос (EMI)](equated_monthly_installments.md)  
+[Batch Updates](../web_programming/current_stock_price.md) 
+[Merkle Patricia Trie (MPT)](batch_updates.md)  
