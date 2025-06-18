@@ -4,120 +4,125 @@ site_description: Сайт про всякие алгоритмы.
 site_author: Igor Gorschal
 repo_url: https://github.com/neegor/algobook
 theme:
-  name: material
-  locale: ru
-  logo: assets/logo.svg
-  favicon: assets/favicon.png
+    name: material
+    locale: ru
+    logo: assets/logo.svg
+    favicon: assets/favicon.png
 
-  features:
-    - content.code.copy
-    - content.code.select
-    - content.code.annotate
-    - navigation.instant
-    - navigation.path
-  palette:
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      toggle:
-        icon: material/brightness-4
-        name: Switch to system preference
+    features:
+        - content.code.copy
+        - content.code.select
+        - content.code.annotate
+        - navigation.instant
+        - navigation.path
+    palette:
+        - media: "(prefers-color-scheme)"
+          toggle:
+              icon: material/brightness-auto
+              name: Switch to light mode
+        - media: "(prefers-color-scheme: light)"
+          scheme: default
+          toggle:
+              icon: material/brightness-7
+              name: Switch to dark mode
+        - media: "(prefers-color-scheme: dark)"
+          scheme: slate
+          toggle:
+              icon: material/brightness-4
+              name: Switch to system preference
 
 nav:
-  - IoT-системы:
-      - md/batch_updates.md
-  - Автономные транспортные средства:
-      - md/deep_q_networks.md
-  - Базы данных:
-      - md/check_cycle.md
-      - md/batch_updates.md
-  - Биотехнологии и медицина:
-      - md/bidirectional_a_star.md
-      - md/check_cycle.md
-      - md/deep_q_networks.md
-      - md/1ddp.md
-      - md/apriori_algorithm.md
-      - md/data_transformations.md
-  - Веб-аналитика:
-      - md/apriori_algorithm.md
-  - Графы:
-      - md/bidirectional_a_star.md
-  - Игровая разработка:
-      - md/deep_q_networks.md
-      - md/astar.md
-  - Компьютерное зрение:
-      - md/1ddp.md
-      - md/data_transformations.md
-  - Компьютерные науки:
-      - md/check_cycle.md
-  - Логистика:
-      - md/1ddp.md
-      - md/batch_updates.md
-      - md/astar.md
-  - Машинное обучение:
-      - md/bidirectional_a_star.md
-      - md/automatic_differentiation.md
-      - md/batch_updates.md
-      - md/astar.md
-  - Научные вычисления:
-      - md/automatic_differentiation.md
-  - Обработка текста:
-      - md/bidirectional_a_star.md
-      - md/1ddp.md
-      - md/data_transformations.md
-  - Предиктивная аналитика:
-      - md/data_transformations.md
-  - Рекомендательные системы:
-      - md/apriori_algorithm.md
-  - Робототехника:
-      - md/deep_q_networks.md
-      - md/automatic_differentiation.md
-      - md/astar.md
-  - Сетевые технологии:
-      - md/bidirectional_a_star.md
-  - Социальные сети:
-      - md/check_cycle.md
-  - Торговля:
-      - md/apriori_algorithm.md
-  - Физическое моделирование:
-      - md/automatic_differentiation.md
-  - Экономика и финансы:
-      - md/check_cycle.md
-      - md/deep_q_networks.md
-      - md/automatic_differentiation.md
-      - md/1ddp.md
-      - md/batch_updates.md
-      - md/apriori_algorithm.md
-      - md/data_transformations.md
+    - IoT-системы:
+          - md/batch_updates.md
+    - Автономные транспортные средства:
+          - md/deep_q_networks.md
+    - Базы данных:
+          - md/check_cycle.md
+          - md/batch_updates.md
+    - Биотехнологии и медицина:
+          - md/bidirectional_a_star.md
+          - md/check_cycle.md
+          - md/deep_q_networks.md
+          - md/1ddp.md
+          - md/apriori_algorithm.md
+          - md/fp_growth.md
+          - md/data_transformations.md
+    - Веб-аналитика:
+          - md/apriori_algorithm.md
+          - md/fp_growth.md
+    - Графы:
+          - md/bidirectional_a_star.md
+    - Игровая разработка:
+          - md/deep_q_networks.md
+          - md/astar.md
+    - Компьютерное зрение:
+          - md/1ddp.md
+          - md/data_transformations.md
+    - Компьютерные науки:
+          - md/check_cycle.md
+    - Логистика:
+          - md/1ddp.md
+          - md/batch_updates.md
+          - md/astar.md
+    - Машинное обучение:
+          - md/bidirectional_a_star.md
+          - md/automatic_differentiation.md
+          - md/batch_updates.md
+          - md/astar.md
+    - Научные вычисления:
+          - md/automatic_differentiation.md
+    - Обработка текста:
+          - md/bidirectional_a_star.md
+          - md/1ddp.md
+          - md/data_transformations.md
+    - Предиктивная аналитика:
+          - md/data_transformations.md
+    - Рекомендательные системы:
+          - md/apriori_algorithm.md
+          - md/fp_growth.md
+    - Робототехника:
+          - md/deep_q_networks.md
+          - md/automatic_differentiation.md
+          - md/astar.md
+    - Сетевые технологии:
+          - md/bidirectional_a_star.md
+    - Социальные сети:
+          - md/check_cycle.md
+    - Торговля:
+          - md/apriori_algorithm.md
+          - md/fp_growth.md
+    - Физическое моделирование:
+          - md/automatic_differentiation.md
+    - Экономика и финансы:
+          - md/check_cycle.md
+          - md/deep_q_networks.md
+          - md/automatic_differentiation.md
+          - md/1ddp.md
+          - md/batch_updates.md
+          - md/apriori_algorithm.md
+          - md/fp_growth.md
+          - md/data_transformations.md
 
 markdown_extensions:
-  - pymdownx.arithmatex:
-      generic: true
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
+    - pymdownx.arithmatex:
+          generic: true
+    - pymdownx.highlight:
+          anchor_linenums: true
+          line_spans: __span
+          pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
 
 extra_javascript:
-  - assets/katex.js
-  - https://unpkg.com/katex@0/dist/katex.min.js
-  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+    - assets/katex.js
+    - https://unpkg.com/katex@0/dist/katex.min.js
+    - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
 
 extra_css:
-  - https://unpkg.com/katex@0/dist/katex.min.css
+    - https://unpkg.com/katex@0/dist/katex.min.css
 
 plugins:
-  - meta
-  - search:
-      lang: ru
+    - meta
+    - search:
+          lang: ru
