@@ -13,13 +13,15 @@ theme:
     - content.code.copy
     - content.code.select
     - content.code.annotate
+    - navigation.tracking
+    - navigation.sections
   palette:
     - media: "(prefers-color-scheme)"
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: default 
+      scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -30,21 +32,35 @@ theme:
         name: Switch to system preference
 
 nav:
-    - Начало: index.md
-    - Графы: graphs/index.md
-    - Машинное обучение: machine_learning/index.md
-    - Компьютерное зрение: cv/index.md
-    - Рекомендательные: reqsys/index.md
-    - Динамическое программирование: dynamic/index.md
-    - Финансовые: financial/index.md
-    - Web программирование: web_programming/index.md
-    - Сортировки: sorts/index.md
-    - Поиск: search/index.md
-    - Сжатие: compression/index.md
-    - Планирование: scheduling/index.md
-    - Хэш: hashes/index.md
-
-    - Tags: tags.md
+  - Биоинформатика:
+      - md/1ddp.md
+  - Компьютерное зрение:
+      - md/1ddp.md
+  - Логистика:
+      - md/1ddp.md
+  - Обработка текста:
+      - md/1ddp.md
+  - Финансовый анализ:
+      - md/1ddp.md
+  - Другое:
+      - index.md
+      - md/jump_point_search.md
+      - md/bidirectional_a_star.md
+      - md/even_tree.md
+      - md/linucb.md
+      - md/check_cycle.md
+      - md/deep_q_networks.md
+      - md/automatic_differentiation.md
+      - md/merkle_tree.md
+      - md/policy_gradient.md
+      - md/batch_updates.md
+      - md/apriori_algorithm.md
+      - md/merkle_patricia_trie.md
+      - md/diophantine_equation.md
+      - md/equated_monthly_installments.md
+      - md/astar.md
+      - md/data_transformations.md
+      - md/thompson_sampling.md
 
 markdown_extensions:
   - pymdownx.arithmatex:
@@ -57,7 +73,6 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
 
-
 extra_javascript:
   - assets/katex.js
   - https://unpkg.com/katex@0/dist/katex.min.js
@@ -68,6 +83,5 @@ extra_css:
 
 plugins:
   - meta
-  - tags
   - search:
       lang: ru
