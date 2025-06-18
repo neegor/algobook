@@ -13,6 +13,8 @@ theme:
     - content.code.copy
     - content.code.select
     - content.code.annotate
+    - navigation.instant
+    - navigation.path
   palette:
     - media: "(prefers-color-scheme)"
       toggle:
@@ -30,35 +32,71 @@ theme:
         name: Switch to system preference
 
 nav:
-  - Биоинформатика:
+  - IoT-системы:
+      - md/batch_updates.md
+  - Автономные транспортные средства:
+      - md/deep_q_networks.md
+  - Базы данных:
+      - md/check_cycle.md
+      - md/batch_updates.md
+  - Биотехнологии и медицина:
+      - md/bidirectional_a_star.md
+      - md/check_cycle.md
+      - md/deep_q_networks.md
       - md/1ddp.md
+      - md/apriori_algorithm.md
+      - md/data_transformations.md
+  - Веб-аналитика:
+      - md/apriori_algorithm.md
+  - Графы:
+      - md/bidirectional_a_star.md
+  - Игровая разработка:
+      - md/deep_q_networks.md
+      - md/astar.md
   - Компьютерное зрение:
       - md/1ddp.md
+      - md/data_transformations.md
+  - Компьютерные науки:
+      - md/check_cycle.md
   - Логистика:
       - md/1ddp.md
-  - Обработка текста:
-      - md/1ddp.md
-  - Финансовый анализ:
-      - md/1ddp.md
-  - Другое:
-      - index.md
-      - md/jump_point_search.md
+      - md/batch_updates.md
+      - md/astar.md
+  - Машинное обучение:
       - md/bidirectional_a_star.md
-      - md/even_tree.md
-      - md/linucb.md
+      - md/automatic_differentiation.md
+      - md/batch_updates.md
+      - md/astar.md
+  - Научные вычисления:
+      - md/automatic_differentiation.md
+  - Обработка текста:
+      - md/bidirectional_a_star.md
+      - md/1ddp.md
+      - md/data_transformations.md
+  - Предиктивная аналитика:
+      - md/data_transformations.md
+  - Рекомендательные системы:
+      - md/apriori_algorithm.md
+  - Робототехника:
+      - md/deep_q_networks.md
+      - md/automatic_differentiation.md
+      - md/astar.md
+  - Сетевые технологии:
+      - md/bidirectional_a_star.md
+  - Социальные сети:
+      - md/check_cycle.md
+  - Торговля:
+      - md/apriori_algorithm.md
+  - Физическое моделирование:
+      - md/automatic_differentiation.md
+  - Экономика и финансы:
       - md/check_cycle.md
       - md/deep_q_networks.md
       - md/automatic_differentiation.md
-      - md/merkle_tree.md
-      - md/policy_gradient.md
+      - md/1ddp.md
       - md/batch_updates.md
       - md/apriori_algorithm.md
-      - md/merkle_patricia_trie.md
-      - md/diophantine_equation.md
-      - md/equated_monthly_installments.md
-      - md/astar.md
       - md/data_transformations.md
-      - md/thompson_sampling.md
 
 markdown_extensions:
   - pymdownx.arithmatex:
