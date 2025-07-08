@@ -1,6 +1,17 @@
+---
+tags: [Игровая разработка, Робототехника, Логистика, ГИС и картография]
+---
+
 # Jump Point Search (JPS)
 
-__Jump Point Search (JPS)__ - это оптимизированный алгоритм поиска пути на сетках, который является специализированной версией __A*__. Он особенно эффективен для uniform-cost grid environments (сеток с одинаковой стоимостью перемещения между клетками).
+**Jump Point Search (JPS)** - это оптимизированный алгоритм поиска пути на сетках, который является специализированной версией **A\***. Он особенно эффективен для uniform-cost grid environments (сеток с одинаковой стоимостью перемещения между клетками).
+
+## Основные бласти применения
+
+1. Игровая разработка (поиск пути для NPC в стратегиях или RPG с крупными картами, навигация агентов в симулированных пространствах)
+2. Робототехника (планирование траектории мобильных роботов в статичной среде)
+3. Логистика (оптимизация маршрутов в логистике и навигационных приложениях)
+4. ГИС и картография (построение кратчайших путей в сеточных представлениях местности)
 
 ## Основные принципы Jump Point Search
 
@@ -10,11 +21,11 @@ __Jump Point Search (JPS)__ - это оптимизированный алгор
 
 3. **Направленные правила**: Алгоритм использует правила принудительных соседей (forced neighbors) для определения ключевых точек.
 
-## Преимущества перед A*
+## Преимущества перед A\*
 
-- **Быстрее**: В типичных случаях работает в 10-100 раз быстрее A*
+- **Быстрее**: В типичных случаях работает в 10-100 раз быстрее A\*
 - **Меньше памяти**: Открытый список содержит значительно меньше узлов
-- **Тот же результат**: Находит оптимальный путь, как и A*
+- **Тот же результат**: Находит оптимальный путь, как и A\*
 
 ## Пример реализации JPS
 
@@ -35,13 +46,13 @@ class Node:
         self.g = 0  # стоимость от начала
         self.h = 0  # эвристическая оценка
         self.f = 0  # суммарная стоимость
-        
+
     def __eq__(self, other):
         return self.position == other.position
-    
+
     def __lt__(self, other):
         return self.f < other.f
-    
+
     def __hash__(self):
         return hash(self.position)
 
@@ -72,26 +83,26 @@ def has_forced_neighbor(grid: List[List[int]], x: int, y: int, dx: int, dy: int)
                 return True
     return False
 
-def jump(grid: List[List[int]], start: Tuple[int, int], end: Tuple[int, int], 
+def jump(grid: List[List[int]], start: Tuple[int, int], end: Tuple[int, int],
           dx: int, dy: int) -> Optional[Tuple[int, int]]:
     """Функция прыжка: ищет следующую точку перехода"""
     x, y = start
     while True:
         x += dx
         y += dy
-        
+
         # Если достигли конечной точки
         if (x, y) == end:
             return (x, y)
-        
+
         # Если клетка непроходима или вне сетки
         if not is_valid(grid, (x, y)):
             return None
-        
+
         # Проверка принудительных соседей
         if has_forced_neighbor(grid, x, y, dx, dy):
             return (x, y)
-        
+
         # Рекурсивные прыжки по диагонали
         if dx != 0 and dy != 0:
             # Горизонтальный прыжок
@@ -100,14 +111,14 @@ def jump(grid: List[List[int]], start: Tuple[int, int], end: Tuple[int, int],
             # Вертикальный прыжок
             if jump(grid, (x, y), end, 0, dy) is not None:
                 return (x, y)
-    
+
     return None
 
 def get_successors(grid: List[List[int]], node: Node, end: Tuple[int, int]) -> List[Tuple[int, int]]:
     """Возвращает список точек перехода для данного узла"""
     successors = []
     x, y = node.position
-    
+
     # Получаем направления движения от родителя
     if node.parent is None:
         # Начальная точка - проверяем все направления
@@ -118,7 +129,7 @@ def get_successors(grid: List[List[int]], node: Node, end: Tuple[int, int]) -> L
         dx, dy = x - px, y - py
         dx = max(-1, min(1, dx))
         dy = max(-1, min(1, dy))
-        
+
         # Базовые направления
         if dx != 0 and dy != 0:  # диагональное движение
             directions = [
@@ -139,7 +150,7 @@ def get_successors(grid: List[List[int]], node: Node, end: Tuple[int, int]) -> L
                     (dx, 1),  # диагонали
                     (dx, -1)
                 ]
-    
+
     # Проверяем каждое направление на наличие точек перехода
     for dx, dy in directions:
         jx, jy = x + dx, y + dy
@@ -147,7 +158,7 @@ def get_successors(grid: List[List[int]], node: Node, end: Tuple[int, int]) -> L
             jump_point = jump(grid, (x, y), end, dx, dy)
             if jump_point is not None:
                 successors.append(jump_point)
-    
+
     return successors
 
 def jps(grid: List[List[int]], start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
@@ -155,17 +166,17 @@ def jps(grid: List[List[int]], start: Tuple[int, int], end: Tuple[int, int]) -> 
     # Инициализация начального и конечного узлов
     start_node = Node(start)
     end_node = Node(end)
-    
+
     # Открытый и закрытый списки
     open_list = []
     closed_list = set()
-    
+
     # Добавляем начальный узел
     heapq.heappush(open_list, start_node)
-    
+
     while open_list:
         current_node = heapq.heappop(open_list)
-        
+
         # Если достигли цели
         if current_node == end_node:
             path = []
@@ -174,38 +185,38 @@ def jps(grid: List[List[int]], start: Tuple[int, int], end: Tuple[int, int]) -> 
                 path.append(current.position)
                 current = current.parent
             return path[::-1]  # Разворачиваем путь
-        
+
         closed_list.add(current_node.position)
-        
+
         # Получаем точки перехода
         successors = get_successors(grid, current_node, end)
-        
+
         for successor in successors:
             if successor in closed_list:
                 continue
-                
+
             # Создаем новый узел
             new_node = Node(successor, current_node)
-            
+
             # Вычисляем стоимости
             dx = new_node.position[0] - current_node.position[0]
             dy = new_node.position[1] - current_node.position[1]
             step_cost = 1 if dx == 0 or dy == 0 else 1.414  # стоимость диагонального шага
-            
+
             new_node.g = current_node.g + step_cost
             new_node.h = heuristic(new_node.position, end)
             new_node.f = new_node.g + new_node.h
-            
+
             # Проверяем, есть ли уже такой узел в открытом списке с меньшей стоимостью
             found = False
             for node in open_list:
                 if node == new_node and node.g <= new_node.g:
                     found = True
                     break
-            
+
             if not found:
                 heapq.heappush(open_list, new_node)
-    
+
     return []  # Путь не найден
 
 # Пример использования
@@ -223,10 +234,10 @@ if __name__ == "__main__":
         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
-    
+
     start = (0, 0)
     end = (7, 6)
-    
+
     path = jps(grid, start, end)
     print("Найденный путь JPS:")
     for position in path:
@@ -263,11 +274,11 @@ print_grid_with_path(grid, path)
 
 4. **Оптимизация направлений**: При определении преемников учитывается направление движения от родительского узла.
 
-## Сравнение JPS и A*
+## Сравнение JPS и A\*
 
 1. **Производительность**: JPS обычно быстрее, особенно на больших открытых пространствах.
 2. **Память**: JPS хранит меньше узлов в открытом списке.
 3. **Сложность реализации**: JPS сложнее в реализации из-за правил прыжков и принудительных соседей.
-4. **Применимость**: JPS работает только на uniform grids, тогда как A* более универсален.
+4. **Применимость**: JPS работает только на uniform grids, тогда как A\* более универсален.
 
 Jump Point Search особенно полезен в играх и приложениях, где требуется частый поиск пути на больших сетках с однородной стоимостью перемещения.
