@@ -88,10 +88,17 @@ nav:
                 - md/data_transformations.md
         - Патерны проектирования:
                 - md/builder.md
+                - md/adapter.md
                 - md/prototype.md
                 - md/abstract_factory.md
                 - md/singleton.md
+                - md/proxy.md
+                - md/facade.md
+                - md/decorator.md
                 - md/factory_method.md
+                - md/composite.md
+                - md/bridge.md
+                - md/flyweight.md
         - Предиктивная аналитика:
                 - md/data_transformations.md
         - Рекомендательные системы:
