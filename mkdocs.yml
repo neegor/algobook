@@ -88,6 +88,7 @@ nav:
                 - md/data_transformations.md
         - Патерны проектирования:
                 - md/builder.md
+                - md/cqrs.md
                 - md/adapter.md
                 - md/prototype.md
                 - md/abstract_factory.md
